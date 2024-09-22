@@ -10,9 +10,37 @@ use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
 {
+    /**
+     * Register a new student.
+     *
+     * This endpoint allows a new student to register by providing their details.
+     *
+     * @group Student Authentication
+     *
+     * @bodyParam first_name string required The first name of the student. Example: John
+     * @bodyParam middle_name string The middle name of the student. Example: A
+     * @bodyParam last_name string required The last name of the student. Example: Doe
+     * @bodyParam email string required The email address of the student. Must be unique. Example: john.doe@example.com
+     * @bodyParam password string required The password for the student account (minimum 8 characters). Example: secret123
+     * @bodyParam password_confirmation string required Password confirmation (must match the password). Example: secret123
+     *
+     * @response 201 {
+     *    "message": "Student registered successfully",
+     *    "access_token": "2|a1s2d3f4g5h6j7k8l9m0",
+     *    "token_type": "Bearer"
+     * }
+     *
+     * @response 422 {
+     *    "errors": {
+     *        "email": ["The email has already been taken."]
+     *    }
+     * }
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function register(Request $request)
     {
-        // Validate the request data
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -26,7 +54,6 @@ class StudentController extends Controller
             ], 422);
         }
 
-        // Create the new student
         $student = Student::create([
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
@@ -35,16 +62,37 @@ class StudentController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // Create a Sanctum token for the student
         $token = $student->createToken('auth_token')->plainTextToken;
 
-        // Return a successful response
         return response()->json([
             'message' => 'Student registered successfully',
             'access_token' => $token,
             'token_type' => 'Bearer',
         ], 201);
     }
+
+    /**
+     * Student login.
+     *
+     * This endpoint allows a student to log in by providing their email and password.
+     *
+     * @group Student Authentication
+     *
+     * @bodyParam email string required The email address of the student. Example: john.doe@example.com
+     * @bodyParam password string required The password of the student. Example: secret123
+     *
+     * @response 200 {
+     *    "access_token": "2|a1s2d3f4g5h6j7k8l9m0",
+     *    "token_type": "Bearer"
+     * }
+     *
+     * @response 401 {
+     *    "message": "Invalid login details"
+     * }
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function login(Request $request)
     {
         $request->validate([
@@ -52,17 +100,14 @@ class StudentController extends Controller
             'password' => 'required',
         ]);
 
-        // Find the student by email
         $student = Student::where('email', $request->email)->first();
 
-        // Check if the student exists and the password matches
         if (!$student || !Hash::check($request->password, $student->password)) {
             return response()->json([
                 'message' => 'Invalid login details'
             ], 401);
         }
 
-        // Create a Sanctum token for the student
         $token = $student->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -70,5 +115,4 @@ class StudentController extends Controller
             'token_type' => 'Bearer',
         ]);
     }
-
 }

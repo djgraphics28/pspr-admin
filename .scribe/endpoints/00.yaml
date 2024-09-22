@@ -1,0 +1,184 @@
+name: 'Student Authentication'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/student/register
+    metadata:
+      groupName: 'Student Authentication'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Register a new student.'
+      description: 'This endpoint allows a new student to register by providing their details.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      first_name:
+        name: first_name
+        description: 'The first name of the student.'
+        required: true
+        example: John
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      last_name:
+        name: last_name
+        description: 'The last name of the student.'
+        required: true
+        example: Doe
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      email:
+        name: email
+        description: 'The email address of the student. Must be unique.'
+        required: true
+        example: john.doe@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      password:
+        name: password
+        description: 'The password for the student account (minimum 8 characters).'
+        required: true
+        example: secret123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      middle_name:
+        name: middle_name
+        description: 'The middle name of the student.'
+        required: false
+        example: A
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      password_confirmation:
+        name: password_confirmation
+        description: 'Password confirmation (must match the password).'
+        required: true
+        example: secret123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      first_name: John
+      last_name: Doe
+      email: john.doe@example.com
+      password: secret123
+      middle_name: A
+      password_confirmation: secret123
+    fileParameters: []
+    responses:
+      -
+        status: 201
+        content: |-
+          {
+             "message": "Student registered successfully",
+             "access_token": "2|a1s2d3f4g5h6j7k8l9m0",
+             "token_type": "Bearer"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+             "errors": {
+                 "email": ["The email has already been taken."]
+             }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/student/login
+    metadata:
+      groupName: 'Student Authentication'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Student login.'
+      description: 'This endpoint allows a student to log in by providing their email and password.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      email:
+        name: email
+        description: 'The email address of the student.'
+        required: true
+        example: john.doe@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      password:
+        name: password
+        description: 'The password of the student.'
+        required: true
+        example: secret123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      email: john.doe@example.com
+      password: secret123
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "access_token": "2|a1s2d3f4g5h6j7k8l9m0",
+             "token_type": "Bearer"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+             "message": "Invalid login details"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
